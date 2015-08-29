@@ -1,7 +1,17 @@
 import numpy as np 
-
-alphas = [0.001, 0.01, 0.1, 1, 10, 100, 1000]
+'''
+TUNING NEURAL NETWORK
+- Increase hidden layer size (dropout turned off),
+    until data fits perfectly.
+- With same hidden layer size turn on dropout and
+    change dropout_percent until data fits
+- Turn off dropout for testing
+'''
+#alphas = [0.001, 0.01, 0.1, 1, 10, 100, 1000]
+#alphas = [0.01, 0.1, 1, 10, 100]
+alphas = [1, 10]
 hiddenSize = 32
+dropout_percent, do_dropout = (0.2,True)
 
 # compute sigmoid nonlinearity
 def sigmoid(x):
@@ -34,7 +44,12 @@ for alpha in alphas:
 
         # Feed forward through layers 0, 1, and 2
         layer_0 = X
+
         layer_1 = sigmoid(np.dot(layer_0,synapse_0))
+        if(do_dropout):
+            layer_1 *= np.random.binomial([np.ones((len(X),hiddenSize))],
+                1-dropout_percent)[0] * (1.0/(1-dropout_percent))
+
         layer_2 = sigmoid(np.dot(layer_1,synapse_1))
 
         # how much did we miss the target value?
